@@ -3,14 +3,30 @@
 
 import * as React from 'react'
 
-const useLocalStorageState = (storageKey, defaultValue = '') => {
-  const [value, setValue] = React.useState(
-    () => window.localStorage.getItem(storageKey) || defaultValue,
-  )
+const useLocalStorageState = (
+  storageKey,
+  defaultValue = '',
+  {serialize = JSON.stringify, deserialize = JSON.parse} = {},
+) => {
+  const [value, setValue] = React.useState(() => {
+    const valueInStorage = window.localStorage.getItem(storageKey)
+    if (valueInStorage) {
+      return deserialize(valueInStorage)
+    }
+    return typeof defaultValue === 'function' ? defaultValue() : defaultValue
+  })
+
+  const prevKeyRef = React.useRef(storageKey)
 
   React.useEffect(() => {
-    window.localStorage.setItem(storageKey, value)
-  }, [value, storageKey])
+    const prevKey = prevKeyRef.current
+    if (prevKey !== storageKey) {
+      window.localStorage.removeItem(prevKey)
+    }
+
+    prevKeyRef.current = storageKey;
+    window.localStorage.setItem(storageKey, serialize(value))
+  }, [value, storageKey, serialize])
 
   return [value, setValue]
 }
