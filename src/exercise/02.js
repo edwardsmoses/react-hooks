@@ -3,15 +3,20 @@
 
 import * as React from 'react'
 
-function Greeting({initialName = ''}) {
-  
+const useLocalStorageState = (storageKey, defaultValue = '') => {
   const [name, setName] = React.useState(
-    () => window.localStorage.getItem('name') || initialName,
+    () => window.localStorage.getItem(storageKey) || defaultValue,
   )
 
   React.useEffect(() => {
-    window.localStorage.setItem('name', name)
-  }, [name])
+    window.localStorage.setItem(storageKey, name)
+  }, [name, storageKey])
+
+  return [name, setName]
+}
+
+function Greeting({initialName = ''}) {
+  const [name, setName] = useLocalStorageState('name', initialName)
 
   function handleChange(event) {
     setName(event.target.value)
