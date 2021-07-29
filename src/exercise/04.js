@@ -2,9 +2,14 @@
 // http://localhost:3000/isolated/exercise/04.js
 
 import * as React from 'react'
+import {useLocalStorageState} from '../utils'
 
 function Board() {
-  const [squares, setSquares] = React.useState(() => Array(9).fill(null))
+  const [squares, setSquares] = useLocalStorageState(
+    'TicTacToeGame',
+    Array(9).fill(null),
+  )
+
   const [nextValue, setNextValue] = React.useState(null)
   const [winner, setWinner] = React.useState(null)
   const [status, setStatus] = React.useState(null)
