@@ -113,12 +113,15 @@ function Game() {
 
     setCurrentSquares(updatedSquares)
 
-    const updatedHistory =
-      currentStep == null
-        ? [...history, updatedSquares]
-        : [history.slice(0, currentStep + 1), updatedSquares]
-    setHistory(updatedHistory)
+    setCurrentStep(prev => prev + 1)
   }
+
+  React.useEffect(() => {
+    const updatedHistory = [...history]
+    updatedHistory[currentStep] = currentSquares;
+    setHistory(updatedHistory)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep]);
 
   const restart = () => {
     setCurrentSquares(Array(9).fill(null))
@@ -130,6 +133,7 @@ function Game() {
     <li key={index}>
       <button
         className=""
+        disabled={index === currentStep}
         onClick={() => {
           setCurrentSquares(move)
           setCurrentStep(index)
