@@ -117,7 +117,7 @@ function Game() {
   }
 
   React.useEffect(() => {
-    const updatedHistory = [...history]
+    const updatedHistory = history.slice(0, currentStep);
     updatedHistory[currentStep] = currentSquares;
     setHistory(updatedHistory)
   // eslint-disable-next-line react-hooks/exhaustive-deps
